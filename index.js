@@ -52,7 +52,8 @@ app.post("/events", function(request, res) {
 	path += request.body.country + "/";
 	path += request.body.state + "/";
 	path += request.body.city;
-	path += "?key=2364318721608674";
+	var d = new Date();
+	path += "?key=2364318721608674&dates_after=2016" + "-" + d.getMonth() + "-" + d.getDay();
 	console.log(path);
 	var options = {
   	host: url,
