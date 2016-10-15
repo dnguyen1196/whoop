@@ -34,12 +34,30 @@ font-family: 'Josefin Sans', sans-serif;
    opacity: 0;
 }
 
+.title {
+  margin-left: 60px;
+  margin-top: 2px;
+}
 .smallicon {
   height: 52px;
   position: absolute;
   top: 0;
+  display: inline-block;
 }
 
+
+.scrollable-container {
+  overflow: hidden;
+}
+
+.scrollable-list {
+  height: 35vh;
+  overflow-y: scroll;
+}
+.scrollable-list-top {
+  max-height: 35vh;
+  overflow-y: scroll;
+}
 .controls {
   margin-top: 10px;
   border: 1px solid transparent;
