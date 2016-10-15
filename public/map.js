@@ -314,7 +314,6 @@ function addMarkerToMap(lat, lng, type, business, description, name, address) {
     lastinfowindow = infowindow;
 
   });
-
         myLatLng = { lat: lat, lng: lng };
 
         if (type == "restaurants") {
