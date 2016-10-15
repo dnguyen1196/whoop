@@ -46,7 +46,7 @@ app.get('/', function(request, response) {
 app.post("/events", function(request, res) {
 	console.log("hello");
 	var url = "public-api.ticketleap.com";
-	var str = '';  
+	var str = '';
 	var path = "/events/by/location/";
 	console.log(request.body);
 	path += request.body.country + "/";
@@ -60,7 +60,7 @@ app.post("/events", function(request, res) {
 	  port: 80,
 	  path: path,
 	  method: 'GET'
-	};         
+	};
 	callback = function(response) {
   response.on('data', function (chunk) {
     str += chunk;
@@ -71,7 +71,7 @@ app.post("/events", function(request, res) {
   	res.send(JSON.parse(str));
   });
 }
-                        
+
   var req = http.request(options, callback);
 //This is the data we are posting, it needs to be a string or a buffer
 req.end();
