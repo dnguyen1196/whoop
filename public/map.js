@@ -275,7 +275,6 @@ function openWindow (num) {
 var markerArray = [];
 var windowArray = [];
 function addMarkerToMap(lat, lng, type, business, description, name, address) {
-<<<<<<< HEAD
   myLatLng = { lat: lat, lng: lng };
 
   if (type == "restaurants") {
@@ -309,7 +308,6 @@ function addMarkerToMap(lat, lng, type, business, description, name, address) {
   marker.addListener('click', function() {
     infowindow.open(map, marker);
   });
-=======
         myLatLng = { lat: lat, lng: lng };
 
         if (type == "restaurants") {
@@ -346,13 +344,31 @@ function addMarkerToMap(lat, lng, type, business, description, name, address) {
 }
 
 function addToMorning(name, address) {
-        $('#modaltitle').text(name)
-        $('#timeselect').modal()
-        $('#timeselect').on('hidden.bs.modal', function(e, stuff) {
-                var start = moment($('#starttime').val(), 'hh:mm').format('h:mm a')
-                var end = moment($('#endtime').val(), 'hh:mm').format('h:mm a')
-                $("#itinerary").append("<a href=\"#\" class=\"list-group-item\"><h4 class=\"list-group-item-heading\">" + name + "</h4><h5 class=\"list-group-item-text\">" + address + "</h5><p>" + start + ' - ' + end + "</p></a>");
-        })
+  $('#modaltitle').text(name)
+  $('#timeselect').modal()
+  $('#timeselect').on('hide.bs.modal', function(e, stuff) {
+    var start = moment($('#starttime').val(), 'hh:mm').format('h:mm a')
+    // or right after/midnigh
+    var end = moment($('#endtime').val(), 'hh:mm').format('h:mm a')
+    $("#itinerary").append("<a href=\"#\" class=\"list-group-item\"><h4 class=\"list-group-item-heading\">" + name + "</h4><h5 class=\"list-group-item-text\">" + address + "</h5><p>" + start + ' - ' + end + "</p></a>");
+    $(e.currentTarget).unbind()
+    sortItin()
+  })
 }
 
-$()
+function sortItin() {
+  var itin = $('#itinerary')
+  var sorted = itin.children().sort(function(a, b) {
+    var atimes = $(a).find($('p'))[0].innerHTML.split(' - ')
+    var btimes = $(b).find($('p'))[0].innerHTML.split(' - ')
+    var diff = moment(atimes[0]) - moment(btimes[0])
+    if (diff !== 0) {
+      return diff
+    } else {
+      return moment(atimes[1]) - moment(btimes[1])
+    }
+  })
+  console.log(sorted)
+  $(itin).append(sorted)
+  console.log($('#itinerary'))
+}

@@ -38,20 +38,6 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-inverse navbar-static-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-            </div>
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <!-- <li><a>About Us </a></li>
-=======
   <nav class="navbar navbar-inverse navbar-static-top">
     <div class="container">
       <div class="navbar-header">
@@ -61,24 +47,10 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">Whoop!</a>
       </div>
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
-          <! <li><a>About Us </a></li>
->>>>>>> b999baf4b92254cea663a983726dcf9a49b1db26
-                    <li><a href="#">Contact</a></li> -->
         </ul>
-        <!-- <form class="navbar-form navbar-right">
-                    <div class="input-group">
-                        <span class="input-group-addon" id="basic-addon1">Go to:</span>
-                        <form id ='location' method = 'post' action = '/events'>
-                        <input class="form-control" type="number" id = "lat" name="lat">
-                        <input class="form-control" type="number" id = "lng" name="lng">
-                        <input type ='submit' id = 'submit' name = 'Submit' value = 'Submit'/>
-                        </form>
-                    </div>
-                </form> -->
       </div>
     </div>
   </nav>
@@ -87,28 +59,29 @@
             <h1>Welcome.</h1>
         </div>
 -->
-    <div class="row">
-      <div ng-controller="ListCtrl" class="col-sm-3">
-        <ul class="list-group" id="itinerary">
+    <div class="row col-sm-4">
+      <div ng-controller="ListCtrl" class="col-lg-6">
+        <ul class="list-group">
           <a href="#" class="list-group-item active">
             <h4 class="list-group-item-heading">Itinerary</h4>
           </a>
+          <div id="itinerary"></div>
         </ul>
       </div>
-      <div ng-controller="ListCtrl" class="col-sm-3">
+      <div ng-controller="ListCtrl" class="col-lg-6">
         <ul class="list-group" id="recommendations">
           <a href="#" class="list-group-item active">
             <h4 class="list-group-item-heading">Recommendations</h4>
           </a>
         </ul>
       </div>
-
-      <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-      <div class="col-sm-6">
-        <div id="googlemap" style="width:100%;height:85vh">
-        </div>
+    </div>
+    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+    <div class="col-sm-8">
+      <div id="googlemap" style="width:100%;height:85vh">
       </div>
-      <!-- <div ng-controller="ListCtrl" class="col-sm-2">
+    </div>
+    <!-- <div ng-controller="ListCtrl" class="col-sm-2">
                     <ul class="list-group" id="recommendation">
                         <a href="#" class="list-group-item active">
                             <h4 class="list-group-item-heading">Recommendations</h4>
@@ -116,7 +89,6 @@
 
                     </ul>
                 </div> -->
-    </div>
   </div>
   <!-- Large modal -->
   <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="timeselect">
