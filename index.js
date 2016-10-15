@@ -35,7 +35,9 @@ app.get('/', function(request, response) {
 // }).catch(function (error) {
 //     console.error(JSON.stringify(error));
 // });
-
+app.get("/event", function(request, response)) {
+        response.send("Hi");
+});
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
