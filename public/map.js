@@ -118,21 +118,13 @@ function initAutocomplete() {
                   success: function(res) {
                     console.log(res);
                     for(var i = 0; i < res.events.length; i++) {
-                      console.log(res.events[i].venue_street);
-                      var contentString = "<b>" + res.events[i].name + "</b><br>" + res.events[i].description;
-
-                      var infowindow = new google.maps.InfoWindow({
-                        content: contentString
-                    });
-                      var latLng = performGeoCoding(res.events[i].venue_street + " " + res.events[i].venue_postal_code, "event");
+                        var name = res.events[i].name;
+                      var latLng = performGeoCoding(res.events[i].venue_street + ", " + res.events[i].venue_city, "event", "event", res.events[i].description, name);
                       var marker = new google.maps.Marker({
                         position: latLng,
-                        map: map
+                        map: map,
                     });
-                      console.log("DUC");
-                      marker.addListener('click', function() {
-                        infowindow.open(map, marker);
-                    });
+
                   }
                 }
                 });
@@ -221,7 +213,7 @@ function parseReturnData(xhr, type){
 }
 GEO_CODE_API = "AIzaSyDZ6smFYqvu6DIpeKTa2VIlolN-4yIWW_A";
 
-function performGeoCoding(address, type, business) {
+function performGeoCoding(address, type, business, description, name) {
         var url = "https://maps.googleapis.com/maps/api/geocode/json?address="
         var formated = address.split(" ").join("+");
         url += formated;
@@ -231,7 +223,7 @@ function performGeoCoding(address, type, business) {
         xhr.onload = function (e) {
                 if (xhr.readyState === 4) {
                         if (xhr.status === 200) {
-                                parseGeoCode(xhr.responseText, type, business);
+                                parseGeoCode(xhr.responseText, type, business, description, name, address);
                         } else {
                                 console.error(xhr.statusText);
                         }
@@ -240,7 +232,7 @@ function performGeoCoding(address, type, business) {
         xhr.send(null);
 }
 
-function parseGeoCode(text, type, business) {
+function parseGeoCode(text, type, business, description, name, address) {
         var data = JSON.parse(text);
         var results = data["results"];
         results = results[0];
@@ -249,10 +241,10 @@ function parseGeoCode(text, type, business) {
         var coordinate = geometry["location"];
         var lat = coordinate["lat"];
         var lng = coordinate["lng"];
-        addMarkerToMap(lat, lng, type, business);
+        addMarkerToMap(lat, lng, type, business, description, name, address);
 }
 
-function addMarkerToMap(lat, lng, type, business) {
+function addMarkerToMap(lat, lng, type, business, description, name, address) {
         myLatLng = {lat:lat, lng:lng};
 
         if (type=="restaurants"){
@@ -273,10 +265,11 @@ function addMarkerToMap(lat, lng, type, business) {
                 icon: image,
                 map: map,
         });
-
+        if(business != "event") { 
         var contentString = "<b>" +business["name"] +"</b><p>" + business["address_obj"]["address_string"] + "</p>" +
         "<button type='button' onclick='addToMorning(\"" + business["name"] + "\"," + '\"' + business["address_obj"]["address_string"] + '\")\''+ "> Seems fun!</button>";
-        console.log(contentString);
+        }
+        else var contentString = "<b>" + name + "</b><br>" + address + "<br><br>" + description + "<br><button type='button' onclick='addToMorning(\"" + name + "\"," + '\"' + address + '\")\''+ "> Seems fun!</button>";
         var infowindow = new google.maps.InfoWindow({
                 content: contentString
         });
