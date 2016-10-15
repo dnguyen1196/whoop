@@ -329,7 +329,7 @@ function addMarkerToMap(lat, lng, type, business) {
         });
 
         var contentString = "<b>" +business["name"] +"</b><p>" + business["address_obj"]["address_string"] + "</p>" +
-        "<button type='button' onclick='addToMorning(\"" + business["name"] + "\"," + '\"' + business["address_obj"]["address_string"] + '\")> Seems fun!</button>';
+        "<button type='button' onclick='addToMorning(\"" + business["name"] + "\"," + "\"" + business["address_obj"]["address_string"] + "\")'> Seems fun!</button>";
 
         var infowindow = new google.maps.InfoWindow({
                 content: contentString
