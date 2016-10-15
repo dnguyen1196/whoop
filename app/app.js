@@ -1,5 +1,7 @@
 'use strict'
 
+var geocoder = new google.maps.Geocoder()
+
 // Declare app level module which depends on views, and components
 angular.module('myApp', [
     'ngRoute',
@@ -15,9 +17,18 @@ angular.module('myApp', [
       libraries: 'weather, geometry, visualization'
     })
   }])
-  .controller('MainCtrl', ['$rootScope', function($rootScope) {
-    $rootScope.placeID
-    $scope.placeQuery
+  .controller('MainCtrl', ['$rootScope', '$scope', function($rootScope, $scope) {
+    $scope.placeID
+    $scope.addressToSearch
+    $scope.placeQuery = function() {
+      geocoder.geocode({ 'address': $scope.addressToSearch }, function(results, status) {
+        if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
+          var location = results[0].geometry.location
+          console.log(results)
+          $rootScope.$broadcast('SearchSuccess', location)
+        }
+      })
+    }
   }])
   .controller('ListCtrl', ['$route', '$routeParams', '$location', '$scope',
     function ListCtrl($route, $routeParams, $location, $scope) {
@@ -27,7 +38,7 @@ angular.module('myApp', [
     }
   ])
   // derick was here
-  .controller('MapCtrl', ['$scope', 'uiGmapGoogleMapApi', function MapCtrl($scope, uiGmapGoogleMapApi) {
+  .controller('MapCtrl', ['$scope', 'uiGmapGoogleMapApi', '$rootScope', function MapCtrl($scope, uiGmapGoogleMapApi, $rootScope) {
     $scope.mapOptions = {
       styles: [{
         stylers: [
@@ -52,8 +63,11 @@ angular.module('myApp', [
         latitude: 42.403685,
         longitude: -71.120482
       },
-      zoom: 15
+      zoom: 16
     }
-    uiGmapGoogleMapApi.then(function(maps) {
+    $rootScope.$on('SearchSuccess', function (something, newLoc) {
+      $scope.map.center.latitude = newLoc.lat()
+      $scope.map.center.longitude = newLoc.lng()
     })
+    uiGmapGoogleMapApi.then(function(maps) {})
   }])

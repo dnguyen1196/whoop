@@ -34,7 +34,7 @@
   <script src="components/version/interpolate-filter.js"></script>
 </head>
 
-<body ng-app="myApp">
+<body ng-app="myApp" ng-controller="MainCtrl">
   <nav class="navbar navbar-inverse navbar-static-top">
     <div class="container">
       <div class="navbar-header">
@@ -52,20 +52,12 @@
           <li><a>About Us </a></li>
           <li><a href="#">Contact</a></li>
         </ul>
-        <form class="navbar-form navbar-right">
+        <form class="navbar-form navbar-right" ng-submit="placeQuery()" >
           <div class="input-group">
-            <input
-                angular-google-maps-geocoder placeid="{{ placeID }}"
-                output="placeQuery"
-                placeholder="Goto..." 
-                min-length="5"
-                wait-ms="500"
-                class=form-control
-                type="text"
-            ></input>
-            <!-- <input class="form-control" type="text" ng-model="searchVal" aria-describedby="basic-addon1"> -->
+            <div angular-google-maps-geocoder placeid="{{ placeID }}" output="addressToSearch" placeholder="Goto..." min-length="5" 
+            ></div>
             <span class="input-group-btn">
-            <button ng-submit="search()" class="btn btn-primary" id="basic-addon1">Whoop!</button>
+            <button type="submit" class="btn btn-primary" id="basic-addon1">Whoop!</button>
             </span>
           </div>
         </form>
