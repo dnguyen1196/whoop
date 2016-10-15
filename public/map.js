@@ -219,6 +219,7 @@ $.ajax({
   }
 }
 });
+}
 var places = searchBox.getPlaces();
 
 if (places.length == 0) {
@@ -263,8 +264,9 @@ if (places.length == 0) {
                             }
                         });
 map.fitBounds(bounds);
-});
+
 }
+});
 
 
 var TRIP_API_KEY = "89DE2CFC0C1C43978B484B55F9A514EC";
