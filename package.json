@@ -25,7 +25,8 @@
     "morgan": "*",
     "facebook-events-by-location-core":"*",
     "cors":"*",
-    "body-parser": "*"
+    "body-parser": "*",
+    "http": "*"
   },
   "scripts": {
     "postinstall": "bower install",

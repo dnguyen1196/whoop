@@ -1,9 +1,35 @@
+var map;
+var data = {};
+
+$(function() {
+    $('form').submit(function() {
+      var data = {};
+      data.lat = $("#lat").val();
+      data.lng = $("#lng").val();
+        $.ajax({
+            type: 'post',
+            url: '/events',
+            data: data,
+            success: function(data) {
+              
+            }
+        });
+    });
+});
+
+function makeMarkers(lat, lng) {
+
+}
+
+
 function initAutocomplete() {
-        var map = new google.maps.Map(document.getElementById('googlemap'), {
+        map = new google.maps.Map(document.getElementById('googlemap'), {
           center: {lat: -33.8688, lng: 151.2195},
           zoom: 13,
           mapTypeId: 'roadmap'
         });
+
+
 
         // Create the search box and link it to the UI element.
         var input = document.getElementById('pac-input');
@@ -20,7 +46,7 @@ function initAutocomplete() {
         // more details for that place.
         searchBox.addListener('places_changed', function() {
           var places = searchBox.getPlaces();
-
+          console.log(places.length);
           if (places.length == 0) {
             return;
           }
@@ -54,6 +80,10 @@ function initAutocomplete() {
               position: place.geometry.location
             }));
 
+            data.lat = places[0].geometry.location.lat();
+            data.lng = places[0].geometry.location.lng();
+            console.log("lat: " + data.lat);
+            console.log("lng: " + data.lng);
             if (place.geometry.viewport) {
               // Only geocodes have viewport.
               bounds.union(place.geometry.viewport);
@@ -62,5 +92,23 @@ function initAutocomplete() {
             }
           });
           map.fitBounds(bounds);
+
+          $.ajax({
+            type: 'post',
+            url: '/events',
+            data: data,
+            success: function(res) {
+              console.log(res);
+              for(int i = 0; i < res.events.length; i ++) {
+                var marker = new google.maps.Marker({
+                  position: , 
+                  map: map
+                }
+              }
+              map.addMarker(new MarkerOptions()
+        .position(new LatLng(data.lat, data.lng))
+        .title("Hello world"));
+            }
+        });
         });
       }

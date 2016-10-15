@@ -1,6 +1,7 @@
 var express = require("express");
 var morgan = require("morgan");
 var cors = require("cors");
+var http = require('http');
 
 
 // Own modules
@@ -41,22 +42,56 @@ app.get('/', function(request, response) {
 //     console.error(JSON.stringify(error));
 // });
 
-app.post("/events", function(request, response) {
-	var lat = request.body.lat;
-	var lng = request.body.lng;
-	console.log(lat);
-	var es = new EventSearch({
-		"accessToken":"1149596415132442|hlbvMEjn4RxBx6YropCuZ7LlJKw",
-	    "lat": lat,
-	    "lng": lng	
-	});
+ var str = '';  
 
-	es.search().then(function (events) {
-		console.log(JSON.stringify(events));
-	    response.send(events);
-	}).catch(function (error) {
-	    response.send(500);
-	});
+app.post("/events", function(request, res) {
+	console.log("hello");
+	var url = "public-api.ticketleap.com"
+	var options = {
+  	host: url,
+	  port: 80,
+	  path: "/events/by/location/USA/MA/Boston?key=2364318721608674",
+	  method: 'GET'
+	};         
+	callback = function(response) {
+
+  response.on('data', function (chunk) {
+    str += chunk;
+  });
+
+  response.on('end', function () {
+  	//console.log("str" + str);
+  	res.send(JSON.parse(str));
+  });
+}
+
+console.log(str);                          
+  var req = http.request(options, callback);
+//This is the data we are posting, it needs to be a string or a buffer
+req.end();
+
+	// var req = http.request(options, function(res) {
+	// 	 res.setEncoding('utf-8');
+
+ //    	var responseString = '';
+
+ //    	res.on('data', function(data) {
+ //     	 responseString += data;
+ //   		 });
+
+ //    res.on('end', function() {
+ //      console.log(responseString);
+ //      var responseObject = JSON.parse(responseString);
+ //      success(responseObject);
+ //    });
+	// });
+
+	// es.search().then(function (events) {
+	// 	console.log(JSON.stringify(events));
+	//     response.send(events);
+	// }).catch(function (error) {
+	//     response.send(500);
+	// });
 });
 
 app.get("/event", function(request, response) {
