@@ -108,6 +108,90 @@ function initAutocomplete() {
                                 }
                         }
                 });
+          var places = searchBox.getPlaces();
+          console.log(places.length);
+          if (places.length == 0) {
+            return;
+          }
+
+          // Clear out the old markers.
+          markers.forEach(function(marker) {
+            marker.setMap(null);
+          });
+          markers = [];
+
+          // For each place, get the icon, name and location.
+          var bounds = new google.maps.LatLngBounds();
+          places.forEach(function(place) {
+            if (!place.geometry) {
+              console.log("Returned place contains no geometry");
+              return;
+            }
+            var icon = {
+              url: place.icon,
+              size: new google.maps.Size(71, 71),
+              origin: new google.maps.Point(0, 0),
+              anchor: new google.maps.Point(17, 34),
+              scaledSize: new google.maps.Size(25, 25)
+            };
+
+            // Create a marker for each place.
+            markers.push(new google.maps.Marker({
+              map: map,
+              icon: icon,
+              title: place.name,
+              position: place.geometry.location
+            }));
+
+
+            var i = 0;
+            data.city = places[0].address_components[i].short_name;
+            data.city = data.city.split(" ").join("%20");
+            i++;
+            if(places[0].address_components.length == 4) i++;
+            data.state = places[0].address_components[i].short_name;
+            data.state = data.state.split(" ").join("%20");
+            i++;
+            var country = places[0].address_components[i].short_name;
+            if(country = "US") country = "USA";
+            data.country = country;
+            console.log(places[0].address_components);
+            console.log("lat: " + data.lat);
+            console.log("lng: " + data.lng);
+            if (place.geometry.viewport) {
+              // Only geocodes have viewport.
+              bounds.union(place.geometry.viewport);
+            } else {
+              bounds.extend(place.geometry.location);
+            }
+          });
+          map.fitBounds(bounds);
+
+          $.ajax({
+            type: 'post',
+            url: '/events',
+            data: data,
+            success: function(res) {
+              console.log(res);
+              for(var i = 0; i < res.events.length; i++) {
+                console.log(res.events[i].venue_street);
+                var contentString = "<b>" + res.events[i].name + "</b><br>" + res.events[i].description;
+
+                var infowindow = new google.maps.InfoWindow({
+          content: contentString
+        });
+                var latLng = performGeoCoding(res.events[i].venue_street + " " + res.events[i].venue_postal_code, "event");
+                var marker = new google.maps.Marker({
+                  position: latLng,
+                  map: map
+                });
+
+                marker.addListener('click', function() {
+          infowindow.open(map, marker);
+        });
+              }
+            }
+        });
                 var places = searchBox.getPlaces();
 
                 if (places.length == 0) {
@@ -215,7 +299,6 @@ function parseGeoCode(text, type, business) {
         var data = JSON.parse(text);
         var results = data["results"];
         results = results[0];
-
         var geometry = results["geometry"];
         var coordinate = geometry["location"];
         var lat = coordinate["lat"];
@@ -228,6 +311,8 @@ function addMarkerToMap(lat, lng, type, business) {
 
         if (type=="restaurants"){
                 image_url = "./restaurant.png";
+        } else if(type == "event") {
+                image_url = "./event.png";
         } else {
                 image_url ="./landmark.png";
         }
