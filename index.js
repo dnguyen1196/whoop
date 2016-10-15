@@ -42,19 +42,25 @@ app.get('/', function(request, response) {
 //     console.error(JSON.stringify(error));
 // });
 
- var str = '';  
 
 app.post("/events", function(request, res) {
 	console.log("hello");
-	var url = "public-api.ticketleap.com"
+	var url = "public-api.ticketleap.com";
+	var str = '';  
+	var path = "/events/by/location/";
+	console.log(request.body);
+	path += request.body.country + "/";
+	path += request.body.state + "/";
+	path += request.body.city;
+	path += "?key=2364318721608674";
+	console.log(path);
 	var options = {
   	host: url,
 	  port: 80,
-	  path: "/events/by/location/USA/MA/Boston?key=2364318721608674",
+	  path: path,
 	  method: 'GET'
 	};         
 	callback = function(response) {
-
   response.on('data', function (chunk) {
     str += chunk;
   });
@@ -64,8 +70,7 @@ app.post("/events", function(request, res) {
   	res.send(JSON.parse(str));
   });
 }
-
-console.log(str);                          
+                        
   var req = http.request(options, callback);
 //This is the data we are posting, it needs to be a string or a buffer
 req.end();

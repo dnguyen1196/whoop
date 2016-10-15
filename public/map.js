@@ -80,8 +80,19 @@ function initAutocomplete() {
               position: place.geometry.location
             }));
 
-            data.lat = places[0].geometry.location.lat();
-            data.lng = places[0].geometry.location.lng();
+
+            var i = 0; 
+            data.city = places[0].address_components[i].short_name;
+            data.city = data.city.split(" ").join("%20");
+            i++; 
+            if(places[0].address_components.length == 4) i++;
+            data.state = places[0].address_components[i].short_name;
+            data.state = data.state.split(" ").join("%20");
+            i++;
+            var country = places[0].address_components[i].short_name;
+            if(country = "US") country = "USA"; 
+            data.country = country;
+            console.log(places[0].address_components);
             console.log("lat: " + data.lat);
             console.log("lng: " + data.lng);
             if (place.geometry.viewport) {
@@ -99,12 +110,22 @@ function initAutocomplete() {
             data: data,
             success: function(res) {
               console.log(res);
-              for(var i = 0; i < res.events.length; i ++) {
-                var latLng = performGeoCoding(res.events[i].venue_street);
+              for(var i = 0; i < res.events.length; i++) {
+                console.log(res.events[i].venue_street);
+                var contentString = "<b>" + res.events[i].name + "</b><br>" + res.events[i].description; 
+
+                var infowindow = new google.maps.InfoWindow({
+          content: contentString
+        });
+                var latLng = performGeoCoding(res.events[i].venue_street + " " + res.events[i].venue_postal_code, "event");
                 var marker = new google.maps.Marker({
                   position: latLng,
                   map: map
                 });
+
+                marker.addListener('click', function() {
+          infowindow.open(map, marker);
+        });
               }
             }
         });
@@ -211,7 +232,6 @@ function parseGeoCode(text, type) {
         var data = JSON.parse(text);
         var results = data["results"];
         results = results[0];
-
         var geometry = results["geometry"];
         var coordinate = geometry["location"];
         var lat = coordinate["lat"];
@@ -224,6 +244,8 @@ function addMarkerToMap(lat, lng, type) {
 
         if (type=="restaurants"){
                 image_url = "./restaurant.png";
+        } else if(type == "event") {
+                image_url = "./event.png";
         } else {
                 image_url ="./landmark.png";
         }
