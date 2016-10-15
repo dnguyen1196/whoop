@@ -189,13 +189,23 @@ function get_businesses_info(lat, lng, type){
         xhr.onload = function (e) {
                 if (xhr.readyState === 4) {
                         if (xhr.status === 200) {
+                                console.log(xhr.responseText);
                                 parseReturnData(xhr.responseText, type);
+                                displayItems(xhr.responseText, type);
                         } else {
                                 console.error(xhr.statusText);
                         }
                 }
         };
         xhr.send(null);
+}
+
+function displayItems(text, type) {
+        data = JSON.parse(text);
+        recommendations = $("#itinerary");
+        for (var i = 0; i < data.length; i++) {
+                recommendations.append("<li>Item</li>");
+        }
 }
 
 function parseReturnData(xhr, type){
@@ -255,7 +265,6 @@ function addMarkerToMap(lat, lng, type) {
                 origin: new google.maps.Point(0,0), // origin
                 anchor: new google.maps.Point(0,0), // a
         };
-
         var marker = new google.maps.Marker({
                 position: myLatLng,
                 icon: image,
