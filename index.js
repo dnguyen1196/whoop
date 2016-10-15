@@ -57,6 +57,7 @@ app.post("/events", function(request, response) {
 	}).catch(function (error) {
 	    response.send(500);
 	});
+});
 
 app.get("/event", function(request, response) {
         response.send("Hi");
