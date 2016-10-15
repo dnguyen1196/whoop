@@ -40,6 +40,7 @@ app.get('/', function(request, response) {
 // }).catch(function (error) {
 //     console.error(JSON.stringify(error));
 // });
+
 app.post("/events", function(request, response) {
 	var lat = request.body.lat;
 	var lng = request.body.lng;
@@ -56,6 +57,10 @@ app.post("/events", function(request, response) {
 	}).catch(function (error) {
 	    response.send(500);
 	});
+
+app.get("/event", function(request, response) {
+        response.send("Hi");
+
 });
 
 app.listen(app.get('port'), function() {
