@@ -35,7 +35,7 @@ app.get('/', function(request, response) {
 // }).catch(function (error) {
 //     console.error(JSON.stringify(error));
 // });
-app.get("/event", function(request, response)) {
+app.get("/event", function(request, response) {
         response.send("Hi");
 });
 
