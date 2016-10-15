@@ -2,19 +2,19 @@ var map;
 var data = {};
 
 $(function() {
-    $('form').submit(function() {
-      var data = {};
-      data.lat = $("#lat").val();
-      data.lng = $("#lng").val();
-        $.ajax({
-            type: 'post',
-            url: '/events',
-            data: data,
-            success: function(data) {
-              
-            }
+        $('form').submit(function() {
+                var data = {};
+                data.lat = $("#lat").val();
+                data.lng = $("#lng").val();
+                $.ajax({
+                        type: 'post',
+                        url: '/events',
+                        data: data,
+                        success: function(data) {
+
+                        }
+                });
         });
-    });
 });
 
 function makeMarkers(lat, lng) {
@@ -45,69 +45,69 @@ function initAutocomplete() {
         // Listen for the event fired when the user selects a prediction and retrieve
         // more details for that place.
         searchBox.addListener('places_changed', function() {
-          var places = searchBox.getPlaces();
-          console.log(places.length);
-          if (places.length == 0) {
-            return;
-          }
+                var places = searchBox.getPlaces();
+                console.log(places.length);
+                if (places.length == 0) {
+                        return;
+                }
 
-          // Clear out the old markers.
-          markers.forEach(function(marker) {
-            marker.setMap(null);
-          });
-          markers = [];
-
-          // For each place, get the icon, name and location.
-          var bounds = new google.maps.LatLngBounds();
-          places.forEach(function(place) {
-            if (!place.geometry) {
-              console.log("Returned place contains no geometry");
-              return;
-            }
-            var icon = {
-              url: place.icon,
-              size: new google.maps.Size(71, 71),
-              origin: new google.maps.Point(0, 0),
-              anchor: new google.maps.Point(17, 34),
-              scaledSize: new google.maps.Size(25, 25)
-            };
-
-            // Create a marker for each place.
-            markers.push(new google.maps.Marker({
-              map: map,
-              icon: icon,
-              title: place.name,
-              position: place.geometry.location
-            }));
-
-            data.lat = places[0].geometry.location.lat();
-            data.lng = places[0].geometry.location.lng();
-            console.log("lat: " + data.lat);
-            console.log("lng: " + data.lng);
-            if (place.geometry.viewport) {
-              // Only geocodes have viewport.
-              bounds.union(place.geometry.viewport);
-            } else {
-              bounds.extend(place.geometry.location);
-            }
-          });
-          map.fitBounds(bounds);
-
-          $.ajax({
-            type: 'post',
-            url: '/events',
-            data: data,
-            success: function(res) {
-              console.log(res);
-              for(var i = 0; i < res.events.length; i ++) {
-                var latLng = performGeoCoding(res.events[i].venue_street);
-                var marker = new google.maps.Marker({
-                  position: latLng,
-                  map: map
+                // Clear out the old markers.
+                markers.forEach(function(marker) {
+                        marker.setMap(null);
                 });
-              }
-            }
-        });
+                markers = [];
+
+                // For each place, get the icon, name and location.
+                var bounds = new google.maps.LatLngBounds();
+                places.forEach(function(place) {
+                        if (!place.geometry) {
+                                console.log("Returned place contains no geometry");
+                                return;
+                        }
+                        var icon = {
+                                url: place.icon,
+                                size: new google.maps.Size(71, 71),
+                                origin: new google.maps.Point(0, 0),
+                                anchor: new google.maps.Point(17, 34),
+                                scaledSize: new google.maps.Size(25, 25)
+                        };
+
+                        // Create a marker for each place.
+                        markers.push(new google.maps.Marker({
+                                map: map,
+                                icon: icon,
+                                title: place.name,
+                                position: place.geometry.location
+                        }));
+
+                        data.lat = places[0].geometry.location.lat();
+                        data.lng = places[0].geometry.location.lng();
+                        console.log("lat: " + data.lat);
+                        console.log("lng: " + data.lng);
+                        if (place.geometry.viewport) {
+                                // Only geocodes have viewport.
+                                bounds.union(place.geometry.viewport);
+                        } else {
+                                bounds.extend(place.geometry.location);
+                        }
+                });
+                map.fitBounds(bounds);
+
+                $.ajax({
+                        type: 'post',
+                        url: '/events',
+                        data: data,
+                        success: function(res) {
+                                console.log(res);
+                                for(var i = 0; i < res.events.length; i ++) {
+                                        var latLng = performGeoCoding(res.events[i].venue_street);
+                                        var marker = new google.maps.Marker({
+                                                position: latLng,
+                                                map: map
+                                        });
+                                }
+                        }
+                });
                 var places = searchBox.getPlaces();
 
                 if (places.length == 0) {
@@ -168,9 +168,7 @@ function get_businesses_info(lat, lng, type){
         xhr.onload = function (e) {
                 if (xhr.readyState === 4) {
                         if (xhr.status === 200) {
-                                console.log(xhr.responseText);
                                 parseReturnData(xhr.responseText, type);
-                                displayItems(xhr.responseText, type);
                         } else {
                                 console.error(xhr.statusText);
                         }
@@ -179,26 +177,22 @@ function get_businesses_info(lat, lng, type){
         xhr.send(null);
 }
 
-function displayItems(text, type) {
-        data = JSON.parse(text);
-        recommendations = $("#itinerary");
-        for (var i = 0; i < data.length; i++) {
-                recommendations.append("<li>Item</li>");
-        }
-}
+
 
 function parseReturnData(xhr, type){
         var text = JSON.parse(xhr);
         var data = text["data"];
+        recommendations = $("#recommendation");
         for (var i = 0; i < data.length; i++) {
                 var address = data[i]["address_obj"];
                 var str = address["address_string"];
-                performGeoCoding(str, type);
+                // recommendations.append("<li>"+ data[i]["name"] +"</li>");
+                performGeoCoding(str, type, data[i]);
         }
 }
 GEO_CODE_API = "AIzaSyDZ6smFYqvu6DIpeKTa2VIlolN-4yIWW_A";
 
-function performGeoCoding(address, type) {
+function performGeoCoding(address, type, business) {
         var url = "https://maps.googleapis.com/maps/api/geocode/json?address="
         var formated = address.split(" ").join("+");
         url += formated;
@@ -208,7 +202,7 @@ function performGeoCoding(address, type) {
         xhr.onload = function (e) {
                 if (xhr.readyState === 4) {
                         if (xhr.status === 200) {
-                                parseGeoCode(xhr.responseText, type);
+                                parseGeoCode(xhr.responseText, type, business);
                         } else {
                                 console.error(xhr.statusText);
                         }
@@ -217,7 +211,7 @@ function performGeoCoding(address, type) {
         xhr.send(null);
 }
 
-function parseGeoCode(text, type) {
+function parseGeoCode(text, type, business) {
         var data = JSON.parse(text);
         var results = data["results"];
         results = results[0];
@@ -226,10 +220,10 @@ function parseGeoCode(text, type) {
         var coordinate = geometry["location"];
         var lat = coordinate["lat"];
         var lng = coordinate["lng"];
-        addMarkerToMap(lat, lng, type);
+        addMarkerToMap(lat, lng, type, business);
 }
 
-function addMarkerToMap(lat, lng, type) {
+function addMarkerToMap(lat, lng, type, business) {
         myLatLng = {lat:lat, lng:lng};
 
         if (type=="restaurants"){
@@ -248,4 +242,19 @@ function addMarkerToMap(lat, lng, type) {
                 icon: image,
                 map: map,
         });
+
+        var contentString = "<b>" +business["name"] +"</b><p>" + business["address_obj"]["address_string"] + "</p>" +
+        "<button type='button' onclick='addToMorning(\"" + business["name"] + "\"," + '\"' + business["address_obj"]["address_string"] + '\")> Seems fun!</button>';
+
+        var infowindow = new google.maps.InfoWindow({
+                content: contentString
+        });
+        marker.addListener('click', function() {
+                infowindow.open(map, marker);
+        });
+}
+
+function addToMorning(name, address){
+        itinerary = $("#itinerary");
+        itinerary.append("<li>" + name + " - " + address + "</li>");
 }
