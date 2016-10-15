@@ -2,11 +2,16 @@ var express = require("express");
 var morgan = require("morgan");
 var cors = require("cors");
 
+
 // Own modules
 var EventSearch = require("facebook-events-by-location-core");
 
 // Create the Express object
 var app = express();
+
+var bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Use morgan for logging
 app.use(morgan("combined"));
@@ -35,8 +40,22 @@ app.get('/', function(request, response) {
 // }).catch(function (error) {
 //     console.error(JSON.stringify(error));
 // });
-app.get("/event", function(request, response)) {
-        response.send("Hi");
+app.post("/events", function(request, response) {
+	var lat = request.body.lat;
+	var lng = request.body.lng;
+	console.log(lat);
+	var es = new EventSearch({
+		"accessToken":"1149596415132442|hlbvMEjn4RxBx6YropCuZ7LlJKw",
+	    "lat": lat,
+	    "lng": lng	
+	});
+
+	es.search().then(function (events) {
+		console.log(JSON.stringify(events));
+	    response.send(events);
+	}).catch(function (error) {
+	    response.send(500);
+	});
 });
 
 app.listen(app.get('port'), function() {
