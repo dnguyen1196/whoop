@@ -257,7 +257,23 @@ function parseGeoCode(text, type, business, description, name, address) {
   var lng = coordinate["lng"];
   addMarkerToMap(lat, lng, type, business, description, name, address);
 }
+var recNum = 0;
+function addToRec(name, address, business, myLatLng) { 
 
+    if(business != "event")
+    $("#recommendations").append("<a href=\"#\" onclick=\"openWindow(" + recNum + ")\" class=\"list-group-item\"><h4 class=\"list-group-item-heading\">" + business["name"] + "</h4><h5 class=\"list-group-item-text\">" + address + "</h5>");
+    else 
+    $("#recommendations").append("<a href=\"#\" onclick=\"openWindow(" + recNum + ")\" class=\"list-group-item\"><h4 class=\"list-group-item-heading\">" + name + "</h4><h5 class=\"list-group-item-text\">" + address + "</h5>");
+    recNum++; 
+}
+
+function openWindow (num) {
+    windowArray[num].open(map, markerArray[num]);
+    map.panTo(markerArray[num]["position"]);
+}
+
+var markerArray = [];
+var windowArray = [];
 function addMarkerToMap(lat, lng, type, business, description, name, address) {
   myLatLng = { lat: lat, lng: lng };
 
@@ -286,6 +302,9 @@ function addMarkerToMap(lat, lng, type, business, description, name, address) {
   var infowindow = new google.maps.InfoWindow({
     content: contentString
   });
+  markerArray.push(marker); 
+  windowArray.push(infowindow);
+  addToRec(name, address, business, myLatLng);
   marker.addListener('click', function() {
     infowindow.open(map, marker);
   });
