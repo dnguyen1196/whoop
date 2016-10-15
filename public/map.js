@@ -246,6 +246,8 @@ function performGeoCoding(address, type, business, description, name) {
         xhr.send(null);
 }
 
+var lastinfowindow = null; 
+
 function parseGeoCode(text, type, business, description, name, address) {
         var data = JSON.parse(text);
         var results = data["results"];
@@ -299,14 +301,18 @@ function addMarkerToMap(lat, lng, type, business, description, name, address) {
     var contentString = "<b>" + business["name"] + "</b><p>" + business["address_obj"]["address_string"] + "</p>" +
       "<button type='button' class='btn btn-default' onclick='addToMorning(\"" + business["name"] + "\"," + '\"' + business["address_obj"]["address_string"] + '\")\'' + "> Seems fun!</button>";
   } else var contentString = "<b>" + name + "</b><br>" + address + "<br><br>" + description + "<br><button type='button' class='btn btn-default' onclick='addToMorning(\"" + name + "\"," + '\"' + address + '\")\'' + "> Seems fun!</button>";
-  var infowindow = new google.maps.InfoWindow({
+      infowindow = new google.maps.InfoWindow({
     content: contentString
   });
   markerArray.push(marker); 
   windowArray.push(infowindow);
   addToRec(name, address, business, myLatLng);
   marker.addListener('click', function() {
+    if(lastinfowindow != null) lastinfowindow.close();
+
     infowindow.open(map, marker);
+    lastinfowindow = infowindow;
+
   });
         myLatLng = { lat: lat, lng: lng };
 
@@ -339,22 +345,43 @@ function addMarkerToMap(lat, lng, type, business, description, name, address) {
                 content: contentString
         });
         marker.addListener('click', function() {
+            if(lastinfowindow != null) lastinfowindow.close(); 
                 infowindow.open(map, marker);
+                lastinfowindow = infowindow;
         });
 }
 
+
+var itinArray = []; 
 function addToMorning(name, address) {
-  $('#modaltitle').text(name)
-  $('#timeselect').modal()
+  $('#modaltitle').text(name);
+  $('#timeselect').modal();
   $('#timeselect').on('hide.bs.modal', function(e, stuff) {
+    $("itinerary").html(""); 
     var start = moment($('#starttime').val(), 'hh:mm').format('h:mm a')
     // or right after/midnigh
     var end = moment($('#endtime').val(), 'hh:mm').format('h:mm a')
-    $("#itinerary").append("<a href=\"#\" class=\"list-group-item\"><h4 class=\"list-group-item-heading\">" + name + "</h4><h5 class=\"list-group-item-text\">" + address + "</h5><p>" + start + ' - ' + end + "</p></a>");
-    $(e.currentTarget).unbind()
-    sortItin()
+    var itin = {"name": name, "address": address, "start": start, "end": end};
+    itinArray.push(itin); 
+    itinArray.sort(function (a, b) {
+      if (a.start > b.start) {
+        return 1;
+      }
+      if (a.start < b.start) {
+        return -1;
+      }
+      // a must be equal to b
+      return 0;
+    });
+    var toAdd = "";
+    for(var i = 0; i < itinArray.length; i++) {
+        toAdd += "<a href=\"#\" class=\"list-group-item\"><h4 class=\"list-group-item-heading\">" + itinArray[i].name + "</h4><h5 class=\"list-group-item-text\">" +  itinArray[i].address + "</h5><p>" +  itinArray[i].start + ' - ' +  itinArray[i].end + "</p></a>";
+    }
+    $('#itinerary').html(toAdd);
+    $(e.currentTarget).unbind();
   })
 }
+
 
 function sortItin() {
   var itin = $('#itinerary')

@@ -70,3 +70,9 @@
 #target {
   width: 345px;
 }
+
+
+#recommendations{
+  height:200px;
+  overflow-y:scroll;
+}
