@@ -20,6 +20,7 @@
     "protractor": "^3.2.2"
   },
   "dependencies": {
+    "bower": "^1.7.7",
     "ejs": "2.4.1",
     "express": "4.13.3",
     "morgan": "*",
@@ -29,7 +30,7 @@
     "http": "*"
   },
   "scripts": {
-    "postinstall": "bower cache clean && bower install",
+    "postinstall": "bower install",
     "prestart": "npm install",
     "start": "http-server -a localhost -p 8000 -c-1 ./app",
     "pretest": "npm install",
