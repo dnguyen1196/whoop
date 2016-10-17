@@ -30,7 +30,7 @@
     "http": "*"
   },
   "scripts": {
-    "postinstall": "./node_modules/bower/bin/bower install"
+    "postinstall": "npm install && ./node_modules/bower/bin/bower install"
   },
   "bugs": {
     "url": "https://github.com/angular/angular-seed/issues"
