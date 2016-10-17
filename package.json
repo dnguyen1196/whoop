@@ -42,5 +42,7 @@
     "angular-google-maps": "^2.4.0",
     "lodash": "^4.16.4"
   },
-  "engines": { "node": ">=0.10.3 <0.12" }
+  "engines": {
+    "node": "4.2.4",
+    "npm" : "3.7.3" }
 }
