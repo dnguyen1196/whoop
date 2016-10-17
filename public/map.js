@@ -1,6 +1,6 @@
 var map;
 var data = {};
-
+var itinArray = []; 
 $(function() {
   $('form').submit(function() {
     var data = {};
@@ -66,7 +66,9 @@ function initAutocomplete() {
     if (places.length == 0) {
       return;
     }
-
+    $("#recommendations").html(""); 
+    $("#itinerary").html(""); 
+    itinArray = []
     // Clear out the old markers.
     markers.forEach(function(marker) {
       marker.setMap(null);
@@ -134,14 +136,11 @@ function initAutocomplete() {
           })
           var contentString = "<b>" + res.events[i].name + "</b><br>" + res.events[i].description;
 
-          infowindow = new google.maps.InfoWindow({
+          var infowindow = new google.maps.InfoWindow({
             content: contentString
           });
           marker.addListener('click', function() {
-            if (lastinfowindow != null)
-              lastinfowindow.close();
             infowindow.open(map, marker);
-            lastinfowindow = infowindow;
           });
 
         }
@@ -221,6 +220,8 @@ function parseReturnData(xhr, type) {
   var text = JSON.parse(xhr);
   var data = text["data"];
   recommendations = $("#recommendation");
+  console.log('hi')
+  recommendations.html(""); 
   for (var i = 0; i < data.length; i++) {
     var address = data[i]["address_obj"];
     var str = address["address_string"];
@@ -247,8 +248,7 @@ function performGeoCoding(address, type, business, description, name) {
   xhr.send(null);
 }
 
-var lastinfowindow = null;
-var infowindow = null;
+var lastinfowindow = null; 
 
 function parseGeoCode(text, type, business, description, name, address) {
   var data = JSON.parse(text);
@@ -305,19 +305,55 @@ function addMarkerToMap(lat, lng, type, business, description, name, address) {
     var contentString = "<b>" + business["name"] + "</b><p>" + business["address_obj"]["address_string"] + "</p>" +
       "<button type='button' class='btn btn-primary' onclick='addToMorning(\"" + business["name"] + "\"," + '\"' + business["address_obj"]["address_string"] + '\")\'' + "> Seems fun!</button>";
   } else var contentString = "<b>" + name + "</b><br>" + address + "<br><br>" + description + "<br><button type='button' class='btn btn-primary' onclick='addToMorning(\"" + name + "\"," + '\"' + address + '\")\'' + "> Seems fun!</button>";
+      infowindow = new google.maps.InfoWindow({
+    content: contentString
+  });
   markerArray.push(marker);
   windowArray.push(infowindow);
   addToRec(name, address, business, myLatLng);
   marker.addListener('click', function() {
-    if (lastinfowindow != null) lastinfowindow.close();
+    if(lastinfowindow != null) lastinfowindow.close();
 
-    infowindow = new google.maps.InfoWindow({
-      content: contentString
-    });
     infowindow.open(map, marker);
     lastinfowindow = infowindow;
 
   });
+        myLatLng = { lat: lat, lng: lng };
+
+        if (type == "restaurants") {
+                image_url = "./restaurant.png";
+        } else if (type == "event") {
+                image_url = "./event.png";
+        } else {
+                image_url = "./landmark.png";
+        }
+        var image = {
+                url: image_url,
+                scaledSize: new google.maps.Size(30, 30),
+                origin: new google.maps.Point(0, 0), // origin
+                anchor: new google.maps.Point(0, 0), // a
+        };
+        var marker = new google.maps.Marker({
+                position: myLatLng,
+                icon: image,
+                map: map,
+        });
+        if (business != "event") {
+                var contentString = "<b>" + business["name"] + "</b><p>Address: " + business["address_obj"]["address_string"] + "</p>" +
+                "<p>Rating: " + business["rating"] + "</p>" +
+                "<p>Photos: "+ "<a href=\"" + business["see_all_photos"] + "\" target='_blank'>" + "Photos</a>"  + "</p>" +
+                "<button type='button' class='btn btn-primary' onclick='addToMorning(\"" + business["name"] + "\"," + '\"' + business["address_obj"]["address_string"]
+                + '\")\'' + "> Seems fun!</button>";
+        } else var contentString = "<b>" + name + "</b><br>" + address + "<br><br>" + description + "<br><button type='button' class='btn btn-primary' onclick='addToMorning(\"" + name + "\"," + '\"' + address + '\")\'' + "> Seems fun!</button>";
+        var infowindow = new google.maps.InfoWindow({
+                content: contentString
+        });
+        marker.addListener('click', function() {
+            if(lastinfowindow != null) lastinfowindow.close(); 
+                infowindow.open(map, marker);
+                lastinfowindow = infowindow;
+        });
+
   myLatLng = { lat: lat, lng: lng };
 
   if (type == "restaurants") {
@@ -344,68 +380,28 @@ function addMarkerToMap(lat, lng, type, business, description, name, address) {
       "<p>Photos: " + "<a href=\"" + business["see_all_photos"] + "\" target='_blank'>" + "Photos</a>" + "</p>" +
       "<button type='button' class='btn btn-primary' onclick='addToMorning(\"" + business["name"] + "\"," + '\"' + business["address_obj"]["address_string"] + '\")\'' + "> Seems fun!</button>";
   } else var contentString = "<b>" + name + "</b><br>" + address + "<br><br>" + description + "<br><button type='button' class='btn btn-primary' onclick='addToMorning(\"" + name + "\"," + '\"' + address + '\")\'' + "> Seems fun!</button>";
-  infowindow = new google.maps.InfoWindow({
+  var infowindow = new google.maps.InfoWindow({
     content: contentString
   });
   marker.addListener('click', function() {
-    if (lastinfowindow != null)
-      lastinfowindow.close();
     infowindow.open(map, marker);
-    lastinfowindow = infowindow;
-  });
-
-  myLatLng = { lat: lat, lng: lng };
-
-  if (type == "restaurants") {
-    image_url = "./restaurant.png";
-  } else if (type == "event") {
-    image_url = "./event.png";
-  } else {
-    image_url = "./landmark.png";
-  }
-  var image = {
-    url: image_url,
-    scaledSize: new google.maps.Size(30, 30),
-    origin: new google.maps.Point(0, 0), // origin
-    anchor: new google.maps.Point(0, 0), // a
-  };
-  var marker = new google.maps.Marker({
-    position: myLatLng,
-    icon: image,
-    map: map,
-  });
-  if (business != "event") {
-    var contentString = "<b>" + business["name"] + "</b><p>Address: " + business["address_obj"]["address_string"] + "</p>" +
-      "<p>Rating: " + business["rating"] + "</p>" +
-      "<p>Photos: " + "<a href=\"" + business["see_all_photos"] + "\" target='_blank'>" + "Photos</a>" + "</p>" +
-      "<button type='button' class='btn btn-primary' onclick='addToMorning(\"" + business["name"] + "\"," + '\"' + business["address_obj"]["address_string"] + '\")\'' + "> Seems fun!</button>";
-  } else var contentString = "<b>" + name + "</b><br>" + address + "<br><br>" + description + "<br><button type='button' class='btn btn-primary' onclick='addToMorning(\"" + name + "\"," + '\"' + address + '\")\'' + "> Seems fun!</button>";
-  infowindow = new google.maps.InfoWindow({
-    content: contentString
-  });
-  marker.addListener('click', function() {
-    if (lastinfowindow != null)
-      lastinfowindow.close();
-    infowindow.open(map, marker);
-    lastinfowindow = infowindow;
   });
 
 }
 
 
-var itinArray = [];
 
 function addToMorning(name, address) {
   $('#modaltitle').text(name);
   $('#timeselect').modal();
   $('#timeselect').on('hide.bs.modal', function(e, stuff) {
-    $("itinerary").html("");
+    $("itinerary").html(""); 
     var start = moment($('#starttime').val(), 'hh:mm').format('h:mm a')
       // or right after/midnigh
     var end = moment($('#endtime').val(), 'hh:mm').format('h:mm a')
-    var itin = { "name": name, "address": address, "start": start, "end": end };
-    itinArray.push(itin);
-    itinArray.sort(function(a, b) {
+    var itin = {"name": name, "address": address, "start": start, "end": end};
+    itinArray.push(itin); 
+    itinArray.sort(function (a, b) {
       if (a.start > b.start) {
         return 1;
       }
@@ -416,8 +412,8 @@ function addToMorning(name, address) {
       return 0;
     });
     var toAdd = "";
-    for (var i = 0; i < itinArray.length; i++) {
-      toAdd += "<a href=\"#\" class=\"list-group-item\"><h4 class=\"list-group-item-heading\">" + itinArray[i].name + "</h4><h5 class=\"list-group-item-text\">" + itinArray[i].address + "</h5><p>" + itinArray[i].start + ' - ' + itinArray[i].end + "</p></a>";
+    for(var i = 0; i < itinArray.length; i++) {
+        toAdd += "<a href=\"#\" class=\"list-group-item\"><h4 class=\"list-group-item-heading\">" + itinArray[i].name + "</h4><h5 class=\"list-group-item-text\">" +  itinArray[i].address + "</h5><p>" +  itinArray[i].start + ' - ' +  itinArray[i].end + "</p></a>";
     }
     $('#itinerary').html(toAdd);
     $(e.currentTarget).unbind();

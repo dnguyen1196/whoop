@@ -1,7 +1,7 @@
 /* app css stylesheet */
 
 body {
-font-family: 'Josefin Sans', sans-serif;
+  font-family: 'Josefin Sans', sans-serif;
 }
 
 .menu {
@@ -13,6 +13,12 @@ font-family: 'Josefin Sans', sans-serif;
 
 .menu:before {
   content: "[";
+}
+
+.title {
+  margin-left: 60px;
+  margin-top: 4px;
+
 }
 
 .menu:after {
@@ -28,36 +34,20 @@ font-family: 'Josefin Sans', sans-serif;
   padding-right: 0.3em;
 }
 
-.angular-google-map-container { height: 400px; }
+.angular-google-map-container {
+  height: 400px;
+}
 
 .none {
-   opacity: 0;
+  opacity: 0;
 }
 
-.title {
-  margin-left: 60px;
-  margin-top: 2px;
-}
 .smallicon {
   height: 52px;
   position: absolute;
   top: 0;
-  display: inline-block;
 }
 
-
-.scrollable-container {
-  overflow: hidden;
-}
-
-.scrollable-list {
-  height: 35vh;
-  overflow-y: scroll;
-}
-.scrollable-list-top {
-  max-height: 35vh;
-  overflow-y: scroll;
-}
 .controls {
   margin-top: 10px;
   border: 1px solid transparent;
@@ -105,12 +95,12 @@ font-family: 'Josefin Sans', sans-serif;
   font-size: 13px;
   font-weight: 300;
 }
+
 #target {
   width: 345px;
 }
 
-
-#recommendations{
-  height:200px;
-  overflow-y:scroll;
+#recommendations {
+  height: 70vh;
+  overflow-y: scroll;
 }
