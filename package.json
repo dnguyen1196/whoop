@@ -24,13 +24,13 @@
     "ejs": "2.4.1",
     "express": "4.13.3",
     "morgan": "*",
-    "facebook-events-by-location-core":"*",
-    "cors":"*",
+    "facebook-events-by-location-core": "*",
+    "cors": "*",
     "body-parser": "*",
     "http": "*"
   },
   "scripts": {
-    "postinstall": "./node_modules/bower/bin/bower install"
+    "postinstall": "bower install"
   },
   "bugs": {
     "url": "https://github.com/angular/angular-seed/issues"
@@ -41,5 +41,6 @@
   "dependencies": {
     "angular-google-maps": "^2.4.0",
     "lodash": "^4.16.4"
-  }
+  },
+  "engines": { "node": ">=0.10.3 <0.12" }
 }
