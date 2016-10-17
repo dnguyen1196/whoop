@@ -27,21 +27,14 @@
     "facebook-events-by-location-core": "*",
     "cors": "*",
     "body-parser": "*",
-    "http": "*"
-  },
-  "scripts": {
-    "postinstall": "npm install && ./node_modules/bower/bin/bower install"
-  },
-  "bugs": {
-    "url": "https://github.com/angular/angular-seed/issues"
-  },
-  "homepage": "https://github.com/angular/angular-seed#readme",
-  "main": "karma.conf.js",
-  "author": "",
-  "dependencies": {
+    "http": "*",
     "angular-google-maps": "^2.4.0",
     "lodash": "^4.16.4"
   },
+  "scripts": {
+    "postinstall": "./node_modules/bower/bin/bower install"
+  },
+  "author": "",
   "engines": {
     "node": "4.2.4",
     "npm" : "3.7.3" }
